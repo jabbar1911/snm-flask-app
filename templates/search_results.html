@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block title %}Results - SNM{% endblock %}
+
+{% block content %}
+<div class="row mb-5 animate-up">
+    <div class="col-12">
+        <a href="{{ url_for('dashboard') }}"
+            class="btn btn-link text-secondary text-decoration-none p-0 mb-2 small fw-bold">
+            <i class="bi bi-chevron-left"></i> DASHBOARD
+        </a>
+        <h2 class="display-6 fw-800">Search Results</h2>
+        <p class="text-secondary">Query: <span class="text-info fw-bold">"{{ query }}"</span></p>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% if notes or files %}
+    {% if notes %}
+    <div class="col-12 mb-4 animate-up" style="animation-delay: 0.1s;">
+        <h3 class="h6 fw-bold text-uppercase text-secondary mb-3"><i class="bi bi-journal-text me-2"></i> Notes ({{
+            notes|length }})</h3>
+        <div class="row g-3">
+            {% for note in notes %}
+            <div class="col-md-6">
+                <div class="glass-panel p-4 h-100" style="background: rgba(255,255,255,0.02);">
+                    <a href="{{ url_for('viewnotes', nid=note[0]) }}"
+                        class="h5 fw-bold text-info text-decoration-none d-block mb-2">{{ note[1] }}</a>
+                    <p class="text-secondary small mb-0">{{ note[2][:150] }}...</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if files %}
+    <div class="col-12 animate-up" style="animation-delay: 0.2s;">
+        <h3 class="h6 fw-bold text-uppercase text-secondary mb-3"><i class="bi bi-folder2 me-2"></i> Files ({{
+            files|length }})</h3>
+        <div class="row g-3">
+            {% for file in files %}
+            <div class="col-md-6">
+                <div class="glass-panel p-4 h-100 d-flex justify-content-between align-items-center"
+                    style="background: rgba(255,255,255,0.02);">
+                    <div>
+                        <h5 class="fw-bold text-white mb-1">{{ file[1] }}</h5>
+                        <p class="text-secondary small mb-0">{{ file[2] }}</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('viewfile', fid=file[0]) }}" class="btn btn-sm btn-outline-info border-0"
+                            target="_blank"><i class="bi bi-eye"></i></a>
+                        <a href="{{ url_for('downloadfile', fid=file[0]) }}"
+                            class="btn btn-sm btn-outline-purple border-0" style="color: var(--accent-purple);"><i
+                                class="bi bi-download"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <i class="bi bi-search display-3 text-muted mb-3 d-block"></i>
+        <h3 class="text-white">No Results</h3>
+        <p class="text-secondary">Try different keywords.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .fw-800 {
+        font-weight: 800;
+    }
+</style>
+{% endblock %}

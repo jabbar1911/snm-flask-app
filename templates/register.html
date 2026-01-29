@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}Register - SNM{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5 animate-up">
+        <div class="glass-panel p-5">
+            <div class="text-center mb-5">
+                <a href="{{ url_for('home') }}" class="text-decoration-none">
+                    <i class="bi bi-journal-bookmark-fill display-4 text-purple mb-3 d-block"
+                        style="color: var(--accent-purple);"></i>
+                </a>
+                <h1 class="h3 fw-bold">CREATE ACCOUNT</h1>
+                <p class="text-secondary small">Initialize your digital workspace</p>
+            </div>
+
+            <form method="post">
+                <div class="mb-3">
+                    <label class="premium-label">
+                        <i class="bi bi-person-fill"></i> Username
+                    </label>
+                    <input type="text" name="username"
+                        class="form-control bg-dark text-white border-0 py-3 px-4 shadow-none" placeholder="Alias"
+                        required style="background: rgba(255,255,255,0.03) !important; border-radius: 12px;">
+                </div>
+                <div class="mb-3">
+                    <label class="premium-label">
+                        <i class="bi bi-envelope-at-fill"></i> Email Address
+                    </label>
+                    <input type="email" name="email"
+                        class="form-control bg-dark text-white border-0 py-3 px-4 shadow-none"
+                        placeholder="email@example.com" required
+                        style="background: rgba(255,255,255,0.03) !important; border-radius: 12px;">
+                </div>
+                <div class="mb-4">
+                    <label class="premium-label">
+                        <i class="bi bi-shield-lock-fill"></i> Password
+                    </label>
+                    <input type="password" name="password"
+                        class="form-control bg-dark text-white border-0 py-3 px-4 shadow-none" placeholder="••••••••"
+                        required style="background: rgba(255,255,255,0.03) !important; border-radius: 12px;">
+                </div>
+                <button type="submit" class="btn-aurora w-100 py-3 mb-4 fw-bold">REGISTER</button>
+            </form>
+
+            <div class="text-center border-top border-secondary border-opacity-10 pt-4">
+                <p class="text-secondary small mb-0">Already a user? <a href="{{ url_for('login') }}"
+                        class="text-info text-decoration-none fw-bold">SIGN IN</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

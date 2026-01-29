@@ -1,0 +1,129 @@
+/* Authentication Styling */
+:root {
+    --bg-dark: #0a0e14;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --accent: #ff4757;
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --text-main: #e0e6ed;
+    --text-dim: #94a3b8;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    margin: 0;
+    background-image: radial-gradient(circle at 50% 50%, rgba(255, 71, 87, 0.05) 0%, transparent 70%);
+}
+
+.container {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    padding: 50px;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 0.8s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+p {
+    color: var(--text-dim);
+    margin-bottom: 30px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 15px 20px;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+input:focus {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.2);
+}
+
+.btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 10px;
+}
+
+.btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
+}
+
+.link {
+    margin-top: 30px;
+    font-size: 0.95rem;
+}
+
+.link a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.flash {
+    background: rgba(255, 71, 87, 0.1);
+    color: var(--accent);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 71, 87, 0.2);
+}

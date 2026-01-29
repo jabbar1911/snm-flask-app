@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard - SNM{% endblock %}
+
+{% block content %}
+<div class="row g-4 animate-up">
+    <!-- Search Bar (Now using GET to fix 'Search not working' issue) -->
+    <div class="col-12">
+        <div class="glass-panel p-3 px-4" style="border-radius: 20px; background: rgba(255,255,255,0.02);">
+            <form action="{{ url_for('search') }}" method="get" class="d-flex gap-2">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0 text-secondary pe-0">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" name="query"
+                        class="form-control bg-transparent border-0 text-white shadow-none py-2"
+                        placeholder="Quick find records or assets..." required>
+                </div>
+                <button type="submit" class="btn btn-sm btn-aurora px-4 rounded-3">SEARCH</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Notes Card (Wide Bento Piece) -->
+    <div class="col-lg-7 col-md-6">
+        <div class="glass-panel p-5 h-100 d-flex flex-column" style="border-radius: 24px;">
+            <div class="d-flex align-items-center mb-4">
+                <i class="bi bi-sticky-fill fs-2 text-info me-3"></i>
+                <h2 class="fw-bold mb-0">Intelligence</h2>
+            </div>
+            <p class="text-secondary mb-4">Capture and organize your critical thoughts.</p>
+            <div class="mt-auto d-flex gap-3">
+                <a href="{{ url_for('addnotes') }}"
+                    class="btn-aurora flex-grow-1 text-center text-decoration-none py-3 fw-bold">ADD NEW</a>
+                <a href="{{ url_for('viewallnotes') }}"
+                    class="btn-glass flex-grow-1 text-center text-decoration-none py-3 border rounded-3 fw-bold"
+                    style="background: rgba(255,255,255,0.02); color: white;">VIEW ALL</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Export (Tall Bento Piece) -->
+    <div class="col-lg-5 col-md-12">
+        <div class="glass-panel p-5 h-100 d-flex flex-column text-center justify-content-center"
+            style="background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(168, 85, 247, 0.05));">
+            <i class="bi bi-file-earmark-spreadsheet-fill display-3 text-purple mb-4 d-block"
+                style="color: var(--accent-purple);"></i>
+            <h3 class="fw-bold mb-3">Export Data</h3>
+            <p class="text-secondary small mb-5">Package your database into a professional spreadsheet.</p>
+            <a href="{{ url_for('excel_data') }}" class="btn btn-outline-info w-100 py-3 fw-bold border-2"
+                style="border-radius: 12px; letter-spacing: 0.1em;">GET .XLSX</a>
+        </div>
+    </div>
+
+    <!-- File Vault Card (Full Width Bento Piece) -->
+    <div class="col-12">
+        <div class="glass-panel p-5 d-flex flex-md-row flex-column align-items-md-center justify-content-between gap-4"
+            style="border-radius: 24px; border-left: 5px solid var(--accent-cyan); background: rgba(34, 211, 238, 0.02);">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-safe2-fill display-4 text-info me-4"></i>
+                <div>
+                    <h2 class="fw-bold mb-1">Asset Vault</h2>
+                    <p class="text-secondary mb-0">Secure storage for your confidential digital documents.</p>
+                </div>
+            </div>
+            <div class="d-flex gap-3">
+                <a href="{{ url_for('addfiles') }}" class="btn-aurora px-4 py-3 text-decoration-none fw-bold">UPLOAD</a>
+                <a href="{{ url_for('allfiles') }}"
+                    class="btn-glass px-4 py-3 text-decoration-none border rounded-3 fw-bold"
+                    style="background: rgba(255,255,255,0.05); color: white;">VAULT</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fw-800 {
+        font-weight: 800;
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, #fff, var(--accent-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+{% endblock %}

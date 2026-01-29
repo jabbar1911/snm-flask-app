@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}Verify - SNM{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5 animate-up">
+        <div class="glass-panel p-5 text-center">
+            <div class="mb-5">
+                <i class="bi bi-shield-lock display-3 text-info mb-4 d-block"></i>
+                <h2 class="fw-800 text-gradient mb-2">Verification</h2>
+                <p class="text-secondary small">Check your inbox for the access code.</p>
+            </div>
+
+            <form method="post">
+                <div class="mb-5">
+                    <label class="premium-label justify-content-center">
+                        <i class="bi bi-key-fill"></i> Access Token
+                    </label>
+                    <input type="text" name="otppin" id="otpInput" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                        class="form-control bg-dark text-white border-0 py-4 px-4 shadow-none text-center fs-2 fw-bold"
+                        placeholder="000000" required
+                        style="background: rgba(255,255,255,0.03) !important; border-radius: 16px; letter-spacing: 0.2em;">
+                </div>
+                <button type="submit" class="btn-aurora w-100 py-3 shadow">Verify Identity</button>
+            </form>
+
+            <div class="mt-5">
+                <p class="text-secondary small mb-0">Issue? <a href="{{ url_for('register') }}"
+                        class="text-info text-decoration-none fw-bold">Restart</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('otpInput').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+</script>
+
+{% endblock %}

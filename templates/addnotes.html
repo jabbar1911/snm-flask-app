@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}New Note - SNM{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="col-md-9 animate-up">
+        <div class="d-flex align-items-center mb-4 ps-2">
+            <a href="{{ url_for('dashboard') }}"
+                class="btn-glass py-2 px-3 text-decoration-none border rounded-3 small fw-bold me-3"
+                style="background: rgba(255,255,255,0.02); color: white;">
+                <i class="bi bi-arrow-left me-1"></i> DASHBOARD
+            </a>
+            <h1 class="h2 fw-800 text-gradient mb-0">New Record</h1>
+        </div>
+
+        <div class="glass-panel p-5">
+            <form method="post">
+                <div class="mb-4">
+                    <label class="premium-label">
+                        <i class="bi bi-type"></i> Document Title
+                    </label>
+                    <input type="text" name="title"
+                        class="form-control bg-dark text-white border-0 py-3 px-4 shadow-none fs-4 fw-bold"
+                        placeholder="Note title..." required
+                        style="background: rgba(255,255,255,0.03) !important; border-radius: 12px;">
+                </div>
+                <div class="mb-5">
+                    <label class="premium-label">
+                        <i class="bi bi-text-left"></i> Note Content
+                    </label>
+                    <textarea name="content" class="form-control bg-dark text-white border-0 py-4 px-4 shadow-none"
+                        rows="10" placeholder="Start typing..." required
+                        style="background: rgba(255,255,255,0.03) !important; border-radius: 12px; line-height: 1.6;"></textarea>
+                </div>
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn-aurora px-5 py-3 shadow">Save Record</button>
+                    <a href="{{ url_for('viewallnotes') }}"
+                        class="btn-glass px-5 py-3 text-decoration-none border rounded-3 small fw-bold"
+                        style="background: rgba(255,255,255,0.02); color: white;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

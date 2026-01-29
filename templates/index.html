@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}Smart Note Management{% endblock %}
+
+{% block content %}
+<div class="row min-vh-75 align-items-center justify-content-center py-5">
+    <div class="col-lg-10 text-center animate-up">
+        <!-- Premium Branding -->
+        <div class="mb-2">
+            <i class="bi bi-journal-bookmark-fill display-4 text-info opacity-75"></i>
+        </div>
+        <h1 class="display-1 fw-800 mb-2"
+            style="letter-spacing: -0.02em; background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Outfit', sans-serif;">
+            SMART NOTE<br>MANAGER
+        </h1>
+        <p class="text-secondary lead mb-5 mx-auto" style="max-width: 600px; font-weight: 300;">Elevate your digital
+            intelligence with seamless note taking and secure file management.</p>
+
+        <div class="d-flex gap-3 justify-content-center">
+            {% if not session.get('user') %}
+            <a href="{{ url_for('login') }}" class="btn-aurora px-5 py-3 fs-6 fw-bold shadow-lg"
+                style="min-width: 180px; letter-spacing: 0.05em;">LOGIN</a>
+            <a href="{{ url_for('register') }}"
+                class="btn-glass px-5 py-3 text-white text-decoration-none border rounded-3 fw-bold fs-6"
+                style="background: rgba(255,255,255,0.05); min-width: 180px; letter-spacing: 0.05em;">REGISTER</a>
+            {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn-aurora px-5 py-3 fs-5 shadow-lg fw-bold">OPEN DASHBOARD</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .min-vh-75 {
+        min-height: 75vh;
+    }
+
+    .fw-800 {
+        font-weight: 800;
+    }
+
+    .btn-glass:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: var(--accent-cyan) !important;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
