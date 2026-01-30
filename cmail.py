@@ -1,8 +1,10 @@
+import os
 import smtplib
-from  email.message import EmailMessage
-app_password='htjp rsnq luim bmfi'
+from email.message import EmailMessage
 
-SENDER = "2100031733cser@gmail.com"
+# Email Configuration
+SENDER = os.environ.get('SENDER_EMAIL', '2100031733cser@gmail.com')
+app_password = os.environ.get('APP_PASSWORD', 'htjp rsnq luim bmfi')
 
 def send_mail(to, subject, body):
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)

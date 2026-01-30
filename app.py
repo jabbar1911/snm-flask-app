@@ -7,12 +7,26 @@ from io import BytesIO
 from cmail import send_mail
 from otp import genotp
 from stoken import endata, dndata
+import os
 import mysql.connector
 from mysql.connector import Error
-mydb=mysql.connector.connect(user='root',host='localhost',password='1911',database='snm')
+
+# Database Configuration
+db_user = os.environ.get('DB_USER', 'root')
+db_host = os.environ.get('DB_HOST', 'localhost')
+db_password = os.environ.get('DB_PASSWORD', '1911')
+db_name = os.environ.get('DB_NAME', 'snm')
+
+mydb = mysql.connector.connect(
+    user=db_user,
+    host=db_host,
+    password=db_password,
+    database=db_name
+)
+
 app = Flask(__name__)
 excel.init_excel(app)
-app.secret_key = 'snmapp123'
+app.secret_key = os.environ.get('SECRET_KEY', 'snmapp123')
 
 @app.route('/')
 def home():
@@ -454,4 +468,6 @@ def search():
         flash('Please login first.', 'info')
         return redirect(url_for('login'))
 
-app.run(debug=True,use_reloader=True)
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
