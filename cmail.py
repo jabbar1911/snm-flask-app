@@ -1,30 +1,18 @@
 import os
-import smtplib
-from email.message import EmailMessage
+import resend
 from dotenv import load_dotenv
 load_dotenv()
 
 # Email Configuration
-SENDER = os.environ.get('SENDER_EMAIL', '2100031733cser@gmail.com')
-app_password = os.environ.get('APP_PASSWORD', 'htjp rsnq luim bmfi')
+# Using Resend API Key provided by user
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', 're_4s8daE3A_MmeNRqfgJYgawBXqQKmt7khw')
+SENDER = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+
+resend.api_key = RESEND_API_KEY
 
 def send_mail(to, subject, body):
     try:
-        # Use Port 587 with STARTTLS for better cloud compatibility
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(SENDER, app_password)
-        
-        msg = EmailMessage()
-        msg['From'] = SENDER
-        msg['Subject'] = subject
-        msg['To'] = to
-        
-        # Text version
-        msg.set_content(body)
-        
-        # HTML version for premium look
-        # Extract OTP from body (assuming it's the last word)
+        # Extract OTP from body
         otp = body.split()[-1] if body else ""
         
         html_content = f"""
@@ -56,12 +44,18 @@ def send_mail(to, subject, body):
         </body>
         </html>
         """
-        msg.add_alternative(html_content, subtype='html')
         
-        server.send_message(msg)
-        server.quit()
+        params = {
+            "from": f"SNM <{SENDER}>",
+            "to": [to],
+            "subject": subject,
+            "html": html_content,
+        }
+
+        email = resend.Emails.send(params)
+        print(f"Email sent via Resend API: {email}")
         return True
     except Exception as e:
-        print(f"Error sending email: {e}")
+        print(f"Error sending email via Resend: {e}")
         return False
     
