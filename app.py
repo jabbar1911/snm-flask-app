@@ -7,21 +7,16 @@ from io import BytesIO
 from cmail import send_mail
 from otp import genotp
 from stoken import endata, dndata
-import os
-import mysql.connector
-from mysql.connector import Error
+from dotenv import load_dotenv
+load_dotenv()
 
 # Database Configuration
-db_user = os.environ.get('DB_USER', 'root')
-db_host = os.environ.get('DB_HOST', 'localhost')
-db_password = os.environ.get('DB_PASSWORD', '1911')
-db_name = os.environ.get('DB_NAME', 'snm')
-
 mydb = mysql.connector.connect(
-    user=db_user,
-    host=db_host,
-    password=db_password,
-    database=db_name
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USERNAME"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME"),
+    port=int(os.getenv("DB_PORT", 3306))
 )
 
 app = Flask(__name__)
