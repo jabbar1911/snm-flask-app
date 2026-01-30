@@ -12,12 +12,15 @@ load_dotenv()
 
 # Database Configuration
 mydb = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USERNAME"),
-    password=os.getenv("DB_PASSWORD"),
-    database=os.getenv("DB_NAME"),
-    port=int(os.getenv("DB_PORT", 3306))
+    host=os.environ["DB_HOST"],
+    user=os.environ["DB_USERNAME"],
+    password=os.environ["DB_PASSWORD"],
+    database=os.environ["DB_NAME"],
+    port=int(os.environ["DB_PORT"]),
+    ssl_ca="ca.pem",
+    ssl_verify_cert=True
 )
+
 
 app = Flask(__name__)
 excel.init_excel(app)
