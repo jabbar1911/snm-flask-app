@@ -6,7 +6,13 @@ load_dotenv()
 # Email Configuration
 # Using Resend API Key provided by user
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', 're_4s8daE3A_MmeNRqfgJYgawBXqQKmt7khw')
+# IMPORTANT: For Resend Sandbox, you MUST use 'onboarding@resend.dev' 
+# unless you have verified your own domain.
 SENDER = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+
+# Force onboarding if user accidentally left a gmail address in SENDER_EMAIL
+if 'gmail.com' in SENDER.lower() and 'onboarding@resend.dev' not in SENDER.lower():
+    SENDER = 'onboarding@resend.dev'
 
 resend.api_key = RESEND_API_KEY
 
@@ -52,10 +58,15 @@ def send_mail(to, subject, body):
             "html": html_content,
         }
 
-        email = resend.Emails.send(params)
-        print(f"Email sent via Resend API: {email}")
-        return True
+        email_response = resend.Emails.send(params)
+        print(f"Resend API Response for {to}: {email_response}")
+        
+        if hasattr(email_response, 'id') or (isinstance(email_response, dict) and 'id' in email_response):
+            return True
+        else:
+            print(f"Resend returned unexpected response: {email_response}")
+            return False
     except Exception as e:
-        print(f"Error sending email via Resend: {e}")
+        print(f"CRITICAL: Resend Error for {to}: {e}")
         return False
     
