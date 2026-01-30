@@ -8,6 +8,8 @@ from cmail import send_mail
 from otp import genotp
 from stoken import endata, dndata
 from dotenv import load_dotenv
+import mysql.connector
+
 load_dotenv()
 
 # Database Configuration
