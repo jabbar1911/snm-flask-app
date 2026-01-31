@@ -1,22 +1,19 @@
 import os
-import resend
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 from dotenv import load_dotenv
 load_dotenv()
 
-# Email Configuration
-# Using Resend API Key provided by user
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY', 're_4s8daE3A_MmeNRqfgJYgawBXqQKmt7khw')
-# IMPORTANT: For Resend Sandbox, you MUST use 'onboarding@resend.dev' 
-# unless you have verified your own domain.
-SENDER = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+# Brevo Configuration
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
+SENDER = os.environ.get('SENDER_EMAIL', 'your-verified-sender@example.com')
 
-# Force onboarding if user accidentally left a gmail address in SENDER_EMAIL
-if 'gmail.com' in SENDER.lower() and 'onboarding@resend.dev' not in SENDER.lower():
-    SENDER = 'onboarding@resend.dev'
-
-resend.api_key = RESEND_API_KEY
+configuration = sib_api_v3_sdk.Configuration()
+configuration.api_key['api-key'] = BREVO_API_KEY
 
 def send_mail(to, subject, body):
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+    
     try:
         # Extract OTP from body
         otp = body.split()[-1] if body else ""
@@ -51,22 +48,20 @@ def send_mail(to, subject, body):
         </html>
         """
         
-        params = {
-            "from": f"SNM <{SENDER}>",
-            "to": [to],
-            "subject": subject,
-            "html": html_content,
-        }
+        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+            to=[{"email": to}],
+            sender={"email": SENDER, "name": "SNM"},
+            subject=subject,
+            html_content=html_content
+        )
 
-        email_response = resend.Emails.send(params)
-        print(f"Resend API Response for {to}: {email_response}")
-        
-        if hasattr(email_response, 'id') or (isinstance(email_response, dict) and 'id' in email_response):
-            return True
-        else:
-            print(f"Resend returned unexpected response: {email_response}")
-            return False
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        print(f"Brevo API Response for {to}: {api_response}")
+        return True
+    except ApiException as e:
+        print(f"EXCEPTION: Brevo API Error for {to}: {e}")
+        return False
     except Exception as e:
-        print(f"CRITICAL: Resend Error for {to}: {e}")
+        print(f"CRITICAL: Email Error for {to}: {e}")
         return False
     
