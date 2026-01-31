@@ -469,6 +469,46 @@ def search():
         flash('Please login first.', 'info')
         return redirect(url_for('login'))
 
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    if session.get('user'):
+        try:
+            cursor = mydb.cursor(buffered=True)
+            # Get user ID first
+            cursor.execute("select userid from users where useremail=%s", [session.get('user')])
+            user_id_row = cursor.fetchone()
+            
+            if user_id_row:
+                user_id = user_id_row[0]
+                
+                # Delete Notes (Optional if CASCADE DELETE is set, but good practice if unsure)
+                cursor.execute("delete from notesdata where userid=%s", [user_id])
+                
+                # Delete Files (Optional if CASCADE DELETE is set)
+                cursor.execute("delete from filesdata where userid=%s", [user_id])
+                
+                # Delete User
+                cursor.execute("delete from users where userid=%s", [user_id])
+                
+                mydb.commit()
+                cursor.close()
+                
+                # Clear session
+                session.pop('user', None)
+                flash('Your account and all associated data have been permanently deleted.', 'success')
+                return redirect(url_for('home'))
+            else:
+                flash('User not found.', 'error')
+                return redirect(url_for('dashboard'))
+        except Exception as e:
+            print(f"Error deleting account: {e}")
+            flash('An error occurred while deleting your account.', 'error')
+            return redirect(url_for('dashboard'))
+    else:
+        flash('Please login first.', 'info')
+        return redirect(url_for('login'))
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
