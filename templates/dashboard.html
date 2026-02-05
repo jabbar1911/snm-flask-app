@@ -72,6 +72,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Danger Zone (Full Width) -->
+    <div class="col-12 mt-4">
+        <div class="glass-panel p-5 d-flex flex-md-row flex-column align-items-md-center justify-content-between gap-4"
+            style="border-radius: 24px; border-left: 5px solid #ef4444; background: rgba(239, 68, 68, 0.02);">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-octagon-fill display-4 text-danger me-4"></i>
+                <div>
+                    <h2 class="fw-bold mb-1">Danger Zone</h2>
+                    <p class="text-secondary mb-0">Irreversible actions. Be careful!</p>
+                </div>
+            </div>
+            <div>
+                <form action="{{ url_for('delete_account') }}" method="POST" onsubmit="return confirm('WARNING: Are you sure you want to delete your account? This action is permanent and will delete ALL your notes and files forever!')">
+                    <button type="submit" class="btn btn-outline-danger px-4 py-3 fw-bold rounded-3" style="letter-spacing: 0.1em;">
+                        DELETE ACCOUNT
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
