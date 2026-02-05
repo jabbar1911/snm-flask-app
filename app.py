@@ -13,7 +13,15 @@ load_dotenv()
 # Supabase Configuration
 url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
-supabase: Client = create_client(url, key)
+
+if not url or not key:
+    print("❌ ERROR: SUPABASE_URL or SUPABASE_KEY is missing!")
+    print("Please set these in your Render Dashboard > Environment Variables.")
+    # Initialize with dummy values to prevent total crash during import, 
+    # but actual routes will fail if used.
+    supabase: Client = None
+else:
+    supabase: Client = create_client(url, key)
 
 app = Flask(__name__)
 excel.init_excel(app)
@@ -43,8 +51,11 @@ def register():
             if res.user:
                 # Also create a profile in our public.profiles table
                 supabase.table('profiles').insert({"id": res.user.id, "username": username}).execute()
-                flash('Registration successful! Please check your email to confirm your account.', 'success')
-                return redirect(url_for('login'))
+                # Store email in session to use in OTP verification
+                session['reg_email'] = email
+                session['reg_username'] = username
+                flash('Registration details submitted! Please check your email for a 6-digit confirmation code.', 'success')
+                return redirect(url_for('otp'))
         except Exception as e:
             print(f"Registration error: {e}")
             flash('Registration failed. Email might already be in use.', 'error')
@@ -52,6 +63,35 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/otp', methods=['GET', 'POST'])
+def otp():
+    if request.method == 'POST':
+        otp_code = request.form.get('otppin')
+        email = session.get('reg_email')
+        
+        if not email:
+            flash('Session expired. Please register again.', 'error')
+            return redirect(url_for('register'))
+            
+        try:
+            # Supabase OTP Verification
+            res = supabase.auth.verify_otp({
+                "email": email,
+                "token": otp_code,
+                "type": "signup"
+            })
+            
+            if res.user:
+                session.pop('reg_email', None)
+                session.pop('reg_username', None)
+                flash('Email verified! You can now login.', 'success')
+                return redirect(url_for('login'))
+        except Exception as e:
+            print(f"OTP Verification error: {e}")
+            flash('Invalid OTP code. Please try again.', 'error')
+            return redirect(url_for('otp'))
+            
+    return render_template('otp.html')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -74,8 +114,7 @@ def login():
             return redirect(url_for('login'))
     return render_template('login.html')
 
-# Obsolete OTP route removed as Supabase handles email verification automatically.
-# If you want to use OTP verify, Supabase supports it, but simple sign_up sends a link.
+# If you want to use OTP verify, Supabase supports it, and we've implemented it above.
 
 @app.route('/dashboard')
 def dashboard():
