@@ -183,7 +183,7 @@
                 <ul class="navbar-nav ms-auto align-items-center">
                     {% if session.get('user') %}
                     <li class="nav-item me-3">
-                        <span class="nav-link text-white">Hello, {{ session.get('user') }}!</span>
+                        <span class="nav-link text-white">Hello, {{ session.get('username', 'User') }}!</span>
                     </li>
                     <li class="nav-item">
                         <a class="btn-aurora btn btn-sm" href="{{ url_for('logout') }}">

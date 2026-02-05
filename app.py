@@ -1,7 +1,5 @@
-import os           
-import email
+import os
 from flask import Flask, url_for, render_template, request,redirect,flash,session,send_file
-from flask_session import Session
 import flask_excel as excel
 import io
 from io import BytesIO
@@ -51,7 +49,7 @@ def register():
             if res.user:
                 # Also create a profile in our public.profiles table
                 supabase.table('profiles').insert({"id": res.user.id, "username": username}).execute()
-                # Store email in session to use in OTP verification
+                session['username'] = username
                 session['reg_email'] = email
                 session['reg_username'] = username
                 flash('Registration details submitted! Please check your email for a 6-digit confirmation code.', 'success')
@@ -106,6 +104,7 @@ def login():
             if res.user:
                 session['user'] = res.user.email
                 session['user_id'] = res.user.id
+                session['username'] = res.user.user_metadata.get('username', 'User')
                 flash('Login successful!', 'success')
                 return redirect(url_for('dashboard'))
         except Exception as e:
@@ -215,6 +214,7 @@ def logout():
     supabase.auth.sign_out()
     session.pop('user', None)
     session.pop('user_id', None)
+    session.pop('username', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
 

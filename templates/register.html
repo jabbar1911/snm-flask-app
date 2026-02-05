@@ -2,6 +2,15 @@
 
 {% block title %}Register - SNM{% endblock %}
 
+{% block head %}
+<style>
+    .valid-input {
+        color: #22d3ee !important;
+        text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
     <div class="col-md-5 animate-up">
@@ -15,7 +24,7 @@
                 <p class="text-secondary small">Initialize your digital workspace</p>
             </div>
 
-            <form method="post">
+            <form method="post" id="registerForm">
                 <div class="mb-3">
                     <label class="premium-label">
                         <i class="bi bi-person-fill"></i> Username
@@ -37,9 +46,15 @@
                     <label class="premium-label">
                         <i class="bi bi-shield-lock-fill"></i> Password
                     </label>
-                    <input type="password" name="password"
+                    <input type="password" name="password" id="passwordField"
                         class="form-control bg-dark text-white border-0 py-3 px-4 shadow-none" placeholder="••••••••"
-                        required style="background: rgba(255,255,255,0.03) !important; border-radius: 12px;">
+                        required minlength="6"
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{6,}$"
+                        title="Must contain 1 uppercase, 1 lowercase, 1 number, and 1 special character."
+                        style="background: rgba(255,255,255,0.03) !important; border-radius: 12px;">
+                    <div class="form-text text-secondary mt-2 px-1" style="font-size: 0.7rem;" id="passwordHint">
+                        <i class="bi bi-shield-check me-1" id="shieldIcon"></i> SECURITY: A-z, 0-9 & @$!%*?&.
+                    </div>
                 </div>
                 <button type="submit" class="btn-aurora w-100 py-3 mb-4 fw-bold">REGISTER</button>
             </form>
@@ -51,4 +66,23 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('passwordField').addEventListener('input', function () {
+        const val = this.value;
+        const shield = document.getElementById('shieldIcon');
+        const hint = document.getElementById('passwordHint');
+        const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])/;
+
+        if (pattern.test(val) && val.length >= 6) {
+            shield.classList.add('valid-input');
+            hint.classList.add('text-info');
+            hint.classList.remove('text-secondary');
+        } else {
+            shield.classList.remove('valid-input');
+            hint.classList.remove('text-info');
+            hint.classList.add('text-secondary');
+        }
+    });
+</script>
 {% endblock %}
