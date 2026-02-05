@@ -34,9 +34,9 @@ def home():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
         try:
             # Supabase Auth Sign Up
             res = supabase.auth.sign_up({
@@ -47,8 +47,7 @@ def register():
                 }
             })
             if res.user:
-                # Also create a profile in our public.profiles table
-                supabase.table('profiles').insert({"id": res.user.id, "username": username}).execute()
+                # Store email and username in session to use in OTP verification
                 session['username'] = username
                 session['reg_email'] = email
                 session['reg_username'] = username
@@ -64,7 +63,7 @@ def register():
 @app.route('/otp', methods=['GET', 'POST'])
 def otp():
     if request.method == 'POST':
-        otp_code = request.form.get('otppin')
+        otp_code = request.form.get('otppin', '').strip()
         email = session.get('reg_email')
         
         if not email:
@@ -80,6 +79,11 @@ def otp():
             })
             
             if res.user:
+                # ONLY NOW create the profile in our public.profiles table
+                username = session.get('reg_username', 'User')
+                supabase.table('profiles').insert({"id": res.user.id, "username": username}).execute()
+                
+                session['username'] = username
                 session.pop('reg_email', None)
                 session.pop('reg_username', None)
                 flash('Email verified! You can now login.', 'success')
@@ -108,10 +112,66 @@ def login():
                 flash('Login successful!', 'success')
                 return redirect(url_for('dashboard'))
         except Exception as e:
-            print(f"Login error: {e}")
-            flash('Invalid email or password. Please try again.', 'error')
+            # Detailed logging for Render logs
+            print(f"DEBUG: Login failed for {login_email}. Error: {e}")
+            
+            # User-friendly error messages
+            error_msg = str(e).lower()
+            if "email not confirmed" in error_msg:
+                flash('Email not verified. Please check your inbox for the OTP.', 'warning')
+            else:
+                flash('Invalid email or password. Please try again.', 'error')
+            
             return redirect(url_for('login'))
     return render_template('login.html')
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        try:
+            # Supabase Reset Password
+            supabase.auth.reset_password_for_email(email)
+            session['reset_email'] = email
+            flash('Password reset code sent to your email!', 'success')
+            return redirect(url_for('reset_password'))
+        except Exception as e:
+            print(f"Forgot password error: {e}")
+            flash('Error sending reset code. Please check your email.', 'error')
+            return redirect(url_for('forgot_password'))
+    return render_template('forgot_password.html')
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if request.method == 'POST':
+        otp_code = request.form.get('otppin', '').strip()
+        new_password = request.form.get('password', '').strip()
+        email = session.get('reset_email')
+        
+        if not email:
+            flash('Session expired. Please start over.', 'error')
+            return redirect(url_for('forgot_password'))
+            
+        try:
+            # 1. Verify OTP for recovery
+            res = supabase.auth.verify_otp({
+                "email": email,
+                "token": otp_code,
+                "type": "recovery"
+            })
+            
+            if res.user:
+                # 2. Update password
+                supabase.auth.update_user({"password": new_password})
+                session.pop('reset_email', None)
+                flash('Password updated successfully! Please login.', 'success')
+                return redirect(url_for('login'))
+        except Exception as e:
+            print(f"Reset password error: {e}")
+            flash('Invalid code or error updating password.', 'error')
+            return redirect(url_for('reset_password'))
+            
+    return render_template('reset_password.html')
 
 # If you want to use OTP verify, Supabase supports it, and we've implemented it above.
 

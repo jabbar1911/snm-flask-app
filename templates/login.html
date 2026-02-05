@@ -31,6 +31,10 @@
                     <input type="password" name="password"
                         class="form-control bg-dark text-white border-0 py-3 px-4 shadow-none" placeholder="••••••••"
                         required style="background: rgba(255,255,255,0.03) !important; border-radius: 12px;">
+                    <div class="text-end mt-2">
+                        <a href="{{ url_for('forgot_password') }}"
+                            class="text-secondary small text-decoration-none">Forgot Password?</a>
+                    </div>
                 </div>
                 <button type="submit" class="btn-aurora w-100 py-3 mb-4 fw-bold">LOGIN</button>
             </form>
